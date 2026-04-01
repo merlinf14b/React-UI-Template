@@ -1,0 +1,2 @@
+# Place known false positive fingerprints here (one per line)
+# Format: commit-hash:file-path:rule-id
