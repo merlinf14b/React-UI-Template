@@ -107,6 +107,7 @@ Go to **Settings** → check **"Template repository"** to make this repo availab
 - **pnpm audit**: Dependency vulnerability scanning in CI
 - **Dependabot**: Automated dependency update PRs (weekly, grouped by severity)
 - **Pinned versions**: All dependencies use exact versions (`save-exact=true` in `.npmrc`)
+- **Minimum release age**: pnpm is configured to reject packages published less than 14 days ago (`minimum-release-age=20160` in `.npmrc`), guarding against supply chain attacks where malicious versions are typically detected and removed within hours. Override per-install with `pnpm install --minimum-release-age=0` when needed.
 
 ## CI/CD Pipelines
 
