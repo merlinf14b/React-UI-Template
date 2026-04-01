@@ -1,4 +1,4 @@
-name: Storybook
+name: GitHub Pages
 
 on:
   push:
@@ -12,11 +12,11 @@ permissions:
   id-token: write
 
 concurrency:
-  group: storybook-${{ github.ref }}
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build-storybook:
+  build:
     name: Build Storybook
     runs-on: ubuntu-latest
     steps:
@@ -30,27 +30,19 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build-storybook
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-pages-artifact@v3
         with:
-          name: storybook-static
-          path: storybook-static/
+          path: storybook-static
 
-  deploy-storybook:
+  deploy:
     name: Deploy to GitHub Pages
-    needs: build-storybook
+    needs: build
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: storybook-static
-          path: storybook-static
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: storybook-static
       - id: deployment
         uses: actions/deploy-pages@v4
