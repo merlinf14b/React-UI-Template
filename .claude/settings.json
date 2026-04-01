@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '.tool_response.filePath // .tool_input.file_path' | { read -r f; if echo \"$f\" | grep -qE '\\.(ts|tsx)$'; then npx eslint --fix \"$f\"; fi; npx prettier --write --ignore-unknown \"$f\"; } 2>/dev/null || true",
+            "command": "jq -r '.tool_response.filePath // .tool_input.file_path' | { read -r f; if echo \"$f\" | grep -qE '\\.(ts|tsx)$'; then npx eslint --fix \"$f\"; fi; if echo \"$f\" | grep -qE '\\.(md|ts|tsx|json|yml|yaml)$'; then npx prettier --write \"$f\"; fi; } 2>/dev/null || true",
             "timeout": 30,
             "statusMessage": "Running lint & format..."
           }
