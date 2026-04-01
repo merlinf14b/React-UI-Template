@@ -5,6 +5,7 @@ import localesPlugin from "@react-aria/optimize-locales-plugin";
 import { resolve } from "path";
 
 export default defineConfig({
+  base: process.env.VITE_BASE ?? "/",
   plugins: [
     tanstackRouter({
       routesDirectory: "./src/routes",
