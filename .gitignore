@@ -34,5 +34,4 @@ Thumbs.db
 *.log
 
 # Generated
-src/routeTree.gen.ts
 *.tsbuildinfo
