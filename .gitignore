@@ -35,3 +35,4 @@ Thumbs.db
 
 # Generated
 src/routeTree.gen.ts
+*.tsbuildinfo
