@@ -60,7 +60,7 @@ The PostToolUse Claude hook also auto-runs ESLint + Prettier after every file wr
 - `minimumReleaseAge: 10080` in `pnpm-workspace.yaml` — pnpm rejects packages published less than 7 days ago (supply chain protection). Override with `pnpm install --minimum-release-age=0` when needed.
 - To exempt trusted internal packages/scopes, use `minimumReleaseAgeExclude` in `pnpm-workspace.yaml`.
 - Gitleaks runs pre-commit and in CI to catch accidentally committed secrets.
-- `pnpm audit --audit-level=high` runs in CI.
+- CI runs two audit steps: `pnpm audit --audit-level=critical` (hard fail) and `pnpm audit --audit-level=high --ignore-unfixable` (fails on fixable high vulnerabilities only).
 
 ## Component Pattern
 
