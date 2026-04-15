@@ -1,4 +1,5 @@
 minimumReleaseAge: 10080
-# minimumReleaseAgeExclude:
-#   - "@myorg/*" # all packages from an internal scope
-#   - some-package # specific package by name
+minimumReleaseAgeExclude:
+  - "@rolldown/*" # sub-dependencies of vite@8.x
+  - "@napi-rs/*" # sub-dependencies of vite@8.x
+  - "@tanstack/router-core" # sub-dependency of @tanstack/react-router

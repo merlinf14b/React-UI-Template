@@ -1,6 +1,9 @@
 import type { StorybookConfig } from "@storybook/react-vite";
 import type { PluginOption } from "vite";
-import { resolve } from "path";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function removePlugin(
   plugins: PluginOption[] | undefined,
@@ -20,7 +23,7 @@ const config: StorybookConfig = {
     disableTelemetry: true,
   },
   stories: ["../src/**/*.stories.@(ts|tsx)"],
-  addons: ["@storybook/addon-essentials"],
+  addons: [],
   framework: {
     name: "@storybook/react-vite",
     options: {},
