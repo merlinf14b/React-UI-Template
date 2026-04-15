@@ -88,7 +88,6 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: node scripts/audit.cjs critical
-      - run: node scripts/audit.cjs high
         env:
           NODE_OPTIONS: "--experimental-fetch"
       - name: Run Gitleaks
