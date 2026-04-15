@@ -2,6 +2,10 @@
 const fs = require("fs");
 const path = require("path");
 
+const level = process.argv[2] || "critical";
+const minSeverity = level === "critical" ? "critical" : "high";
+const ignoreUnfixable = level === "high";
+
 const pkg = JSON.parse(fs.readFileSync(path.resolve("package.json"), "utf-8"));
 
 const deps = {};
@@ -29,23 +33,36 @@ fetch("https://registry.npmjs.org/-/npm/v1/security/advisories/bulk", {
       console.log("✔ No vulnerabilities found");
       process.exit(0);
     }
-    console.log("✖ Found", vulns.length, "vulnerabilities:");
-    vulns.forEach(([name, issues]) => {
-      issues.forEach((i) =>
-        console.log(
-          "  " +
-            name +
-            "@" +
-            i.vulnerable_versions +
-            " (" +
-            i.severity +
-            ") " +
-            i.title,
-        ),
-      );
-    });
-    const hasCritical = vulns.some(([, v]) =>
+
+    const filtered = vulns.filter(([, v]) =>
       v.some((i) => i.severity === "critical" || i.severity === "high"),
+    );
+
+    if (filtered.length === 0) {
+      console.log("✔ No high+ vulnerabilities found");
+      process.exit(0);
+    }
+
+    console.log("✖ Found vulnerabilities:");
+    filtered.forEach(([name, issues]) => {
+      issues.forEach((i) => {
+        if (i.severity === "critical" || i.severity === "high") {
+          console.log(
+            "  " +
+              name +
+              "@" +
+              i.vulnerable_versions +
+              " (" +
+              i.severity +
+              ") " +
+              i.title,
+          );
+        }
+      });
+    });
+
+    const hasCritical = filtered.some(([, v]) =>
+      v.some((i) => i.severity === "critical"),
     );
     process.exit(hasCritical ? 1 : 0);
   })
