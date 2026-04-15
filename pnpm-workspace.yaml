@@ -1,4 +1,4 @@
-minimumReleaseAge: 20160
-minimumReleaseAgeExclude:
-  - "@myorg/*" # all packages from an internal scope
-  - some-package # specific package by name
+minimumReleaseAge: 10080
+# minimumReleaseAgeExclude:
+#   - "@myorg/*" # all packages from an internal scope
+#   - some-package # specific package by name
