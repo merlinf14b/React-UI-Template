@@ -87,8 +87,8 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm audit --audit-level=critical
-      - run: pnpm audit --audit-level=high --ignore-unfixable
+      - run: node scripts/audit.cjs critical
+      - run: node scripts/audit.cjs high
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
