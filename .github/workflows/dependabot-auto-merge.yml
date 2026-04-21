@@ -26,9 +26,32 @@ jobs:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
       - name: Wait for checks and merge
-        run: |
-          gh pr checks "$PR_URL" --watch --interval 30 --required
-          gh pr merge --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_ID: ${{ github.run_id }}
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          while true; do
+            runs=$(gh api "repos/$GH_REPO/commits/$SHA/check-runs" --paginate \
+              --jq "[.check_runs[] | select(.html_url | contains(\"/runs/$RUN_ID\") | not)]")
+
+            failed=$(echo "$runs" | jq '[.[] | select(.conclusion == "failure" or .conclusion == "cancelled" or .conclusion == "timed_out")] | length')
+            incomplete=$(echo "$runs" | jq '[.[] | select(.status != "completed")] | length')
+
+            if [ "$failed" -gt 0 ]; then
+              echo "A check failed. Aborting."
+              exit 1
+            fi
+
+            if [ "$incomplete" -eq 0 ]; then
+              echo "All checks passed. Merging..."
+              break
+            fi
+
+            echo "Waiting for $incomplete check(s)..."
+            sleep 30
+          done
+
+          gh pr merge --squash "$PR_URL"
