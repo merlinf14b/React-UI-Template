@@ -1,67 +1,34 @@
 # Keeping Your Project in Sync with the Template
 
-GitHub template repositories create a **one-time copy** — there is no built-in upstream link like forks provide. Here are strategies to keep your project updated with template improvements.
+GitHub template repositories create a **one-time copy** — there is no built-in upstream link like forks provide. Use the git remote approach below to pull in future template improvements.
 
-## Option 1: Automated Sync with GitHub Actions (Recommended)
+## Syncing via Git Remote
 
-Add this workflow to your downstream project:
-
-```yaml
-# .github/workflows/template-sync.yml
-name: Template Sync
-
-on:
-  schedule:
-    - cron: "0 0 * * 0" # Weekly on Sunday
-  workflow_dispatch:
-
-jobs:
-  sync:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: AndreasAugustin/actions-template-template-sync@v6
-        with:
-          source_repo_path: merlinf14b/React-UI-Template
-          upstream_branch: main
-          pr_title: "chore: sync with upstream template"
-          pr_labels: template-sync
-```
-
-This will automatically create PRs in your project when the template is updated.
-
-## Option 2: Manual Sync via Git Remote
-
-Add the template as an upstream remote:
+Add the template as an upstream remote (one-time setup):
 
 ```bash
-# Add template as remote (one-time setup)
 git remote add template https://github.com/merlinf14b/React-UI-Template.git
+```
 
-# Fetch template changes
+Fetch and review changes when you want to sync:
+
+```bash
 git fetch template main
 
-# Review changes
+# See what changed since you last synced
 git log template/main --oneline -20
+```
 
-# Cherry-pick specific commits
-git cherry-pick <commit-hash>
+Since template files (CI workflows, config, tooling) rarely overlap with app-specific code, a merge is usually clean:
 
-# Or merge all changes (may have conflicts)
+```bash
 git merge template/main --allow-unrelated-histories
 ```
 
-## Option 3: Diff and Apply
-
-Compare your project against the current template:
+If you prefer more control, diff only the files most likely to have relevant updates before merging:
 
 ```bash
-# Clone template to a temp directory
-git clone https://github.com/merlinf14b/React-UI-Template.git /tmp/template
-
-# Compare specific files
-diff -r /tmp/template/src/stories your-project/src/stories
-diff /tmp/template/.github/workflows/ci.yml your-project/.github/workflows/ci.yml
+git diff HEAD template/main -- .github/ package.json tsconfig.json eslint.config.js vite.config.ts
 ```
 
 ## What Typically Changes
