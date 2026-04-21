@@ -61,7 +61,7 @@ The PostToolUse Claude hook also auto-runs ESLint + Prettier after every file wr
 - To exempt trusted internal packages/scopes, use `minimumReleaseAgeExclude` in `pnpm-workspace.yaml`.
 - Gitleaks runs pre-commit and in CI to catch accidentally committed secrets.
 - CI runs two audit steps: `pnpm audit --audit-level=critical` (hard fail) and `pnpm audit --audit-level=high --ignore-unfixable` (fails on fixable high vulnerabilities only).
-- GitHub Actions are pinned to full commit SHAs (not tags) for supply chain protection. Dependabot keeps them updated weekly (patch/minor only — major bumps require manual intervention).
+- GitHub Actions are pinned to full commit SHAs (not tags) for supply chain protection. Dependabot keeps them updated weekly including major version bumps.
 - CI enforces that all actions are SHA-pinned and that pinned SHAs are at least 7 days old, matching the npm `minimumReleaseAge` policy. Failed checks include suggested alternatives in the job summary.
 - Dependabot vulnerability alerts and automated security fix PRs are enabled on the repository.
 
