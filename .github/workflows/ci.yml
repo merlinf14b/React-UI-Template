@@ -96,7 +96,6 @@ jobs:
     name: Build Storybook
     runs-on: ubuntu-latest
     needs: e2e
-    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v5
@@ -109,6 +108,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build-storybook
       - uses: actions/upload-pages-artifact@v4
+        if: github.ref == 'refs/heads/main'
         with:
           path: storybook-static
 
