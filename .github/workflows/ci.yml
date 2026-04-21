@@ -37,7 +37,7 @@ jobs:
             | sed 's/[[:space:]].*//' \
             | grep '@' \
             | grep -v '\$' \
-            | grep -v '@[0-9a-f]\{40\}')
+            | grep -v '@[0-9a-f]\{40\}' || true)
           if [ -n "$unpinned" ]; then
             echo "## Action Pin Check Failed" >> "$GITHUB_STEP_SUMMARY"
             echo "The following actions are not pinned to a SHA:" >> "$GITHUB_STEP_SUMMARY"
@@ -93,7 +93,7 @@ jobs:
             | sed 's/[[:space:]].*//' \
             | grep -v '\$' \
             | grep '@[0-9a-f]\{40\}' \
-            | sort -u)
+            | sort -u || true)
 
           [ "$failed" -eq 0 ] && echo "All actions are SHA-pinned and meet the $MIN_AGE_DAYS-day minimum age." >> "$GITHUB_STEP_SUMMARY"
           exit $failed
