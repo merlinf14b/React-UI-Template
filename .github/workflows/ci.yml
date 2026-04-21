@@ -50,6 +50,7 @@ jobs:
             failed=1
           fi
 
+          age_summary=""
           while IFS= read -r ref; do
             repo=$(echo "$ref" | cut -d@ -f1 | cut -d/ -f1-2)
             sha=$(echo "$ref" | cut -d@ -f2)
@@ -74,19 +75,13 @@ jobs:
                     ad=$(( (now - ct) / 86400 ))
                     [ "$ad" -ge "$MIN_AGE_DAYS" ] && echo "$t $s" && break
                   done | tail -1)
-              {
-                echo "## Action Age Check Failed"
-                echo "**\`$ref\`** is only $age_days day(s) old (minimum: $MIN_AGE_DAYS days)."
-                if [ -n "$suggestion" ]; then
-                  stag=$(echo "$suggestion" | cut -d' ' -f1)
-                  ssha=$(echo "$suggestion" | cut -d' ' -f2)
-                  echo ""
-                  echo "Suggested alternative (oldest qualifying version in same major):"
-                  echo "\`\`\`"
-                  echo "uses: $repo@$ssha # $stag"
-                  echo "\`\`\`"
-                fi
-              } >> "$GITHUB_STEP_SUMMARY"
+              suggestion_line=""
+              if [ -n "$suggestion" ]; then
+                stag=$(echo "$suggestion" | cut -d' ' -f1)
+                ssha=$(echo "$suggestion" | cut -d' ' -f2)
+                suggestion_line=" → suggest \`$repo@$ssha # $stag\`"
+              fi
+              age_summary="${age_summary}| \`$ref\` | $age_days day(s) |${suggestion_line} |"$'\n'
               echo "::error::$ref is only $age_days day(s) old (minimum: $MIN_AGE_DAYS days)"
               failed=1
             fi
@@ -101,8 +96,14 @@ jobs:
             echo "All actions are SHA-pinned and meet the $MIN_AGE_DAYS-day minimum age." >> "$GITHUB_STEP_SUMMARY"
           else
             ready_date=$(date -u -d "@$(( latest_commit_time + MIN_AGE_DAYS * 86400 ))" '+%m/%d/%Y')
-            echo "" >> "$GITHUB_STEP_SUMMARY"
-            echo "Re-run this check on or after **$ready_date** to pass." >> "$GITHUB_STEP_SUMMARY"
+            {
+              echo "## Action Age Check Failed"
+              echo ""
+              echo "| Action | Age | Suggestion |"
+              echo "| ------ | --- | ---------- |"
+              echo "$age_summary"
+              echo "Re-run this check on or after **$ready_date** to pass."
+            } >> "$GITHUB_STEP_SUMMARY"
           fi
           exit $failed
       - run: pnpm audit --audit-level=critical
