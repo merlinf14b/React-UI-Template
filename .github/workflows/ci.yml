@@ -100,7 +100,7 @@ jobs:
           if [ "$failed" -eq 0 ]; then
             echo "All actions are SHA-pinned and meet the $MIN_AGE_DAYS-day minimum age." >> "$GITHUB_STEP_SUMMARY"
           else
-            ready_date=$(date -u -d "@$(( latest_commit_time + MIN_AGE_DAYS * 86400 ))" '+%Y-%m-%d')
+            ready_date=$(date -u -d "@$(( latest_commit_time + MIN_AGE_DAYS * 86400 ))" '+%m/%d/%Y')
             echo "" >> "$GITHUB_STEP_SUMMARY"
             echo "Re-run this check on or after **$ready_date** to pass." >> "$GITHUB_STEP_SUMMARY"
           fi
