@@ -23,6 +23,7 @@ export default defineConfig({
           /@react-spectrum/,
           /@react-aria/,
           /@react-stately/,
+          /@spectrum-icons/,
         ],
       },
     },
