@@ -120,8 +120,8 @@ export const BasicTagGroup: StoryObj = {
         <Heading level={3}>Removable Tags</Heading>
         <TagGroup
           aria-label="Selected filters"
-          onRemove={(keys) => {
-            void keys;
+          onRemove={() => {
+            /* story stub: removal not wired */
           }}
         >
           <Item key="priority-high">Priority: High</Item>
