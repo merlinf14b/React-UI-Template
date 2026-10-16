@@ -3,3 +3,9 @@ minimumReleaseAgeExclude:
   - "@rolldown/*" # sub-dependencies of vite@8.x
   - "@napi-rs/*" # sub-dependencies of vite@8.x
   - "@tanstack/router-core" # sub-dependency of @tanstack/react-router
+
+overrides:
+  seroval: ">=1.5.3"
+
+onlyBuiltDependencies:
+  - esbuild

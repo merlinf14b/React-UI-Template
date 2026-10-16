@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "pnpm@10.34.7",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -63,14 +64,6 @@
     "typescript-eslint": "8.71.1",
     "vite": "8.2.2",
     "vitest": "4.1.11"
-  },
-  "pnpm": {
-    "overrides": {
-      "seroval": ">=1.5.3"
-    },
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ]
   },
   "lint-staged": {
     "*.{ts,tsx}": [
