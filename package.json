@@ -29,8 +29,8 @@
     "@tanstack/react-router": "1.170.45",
     "@tanstack/react-table": "8.21.3",
     "@tanstack/react-virtual": "3.14.21",
-    "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
