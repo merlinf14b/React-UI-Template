@@ -1,11 +1,17 @@
 import { type CSSProperties, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
-  useReactTable,
+  useTable,
+  tableFeatures,
+  rowSortingFeature,
+  columnFilteringFeature,
+  globalFilteringFeature,
+  createSortedRowModel,
+  createFilteredRowModel,
   createColumnHelper,
-  getCoreRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
+  sortFn_alphanumeric,
+  sortFn_text,
+  filterFn_includesString,
   flexRender,
   type SortingState,
   type ColumnFiltersState,
@@ -115,7 +121,19 @@ const USERS: User[] = [
   },
 ];
 
-const columnHelper = createColumnHelper<User>();
+// v9 requires features, row models and the sort/filter fns used by the 'auto'
+// defaults to be registered explicitly (the core row model is always included).
+const features = tableFeatures({
+  rowSortingFeature,
+  columnFilteringFeature,
+  globalFilteringFeature,
+  sortedRowModel: createSortedRowModel(),
+  filteredRowModel: createFilteredRowModel(),
+  sortFns: { alphanumeric: sortFn_alphanumeric, text: sortFn_text },
+  filterFns: { includesString: filterFn_includesString },
+});
+
+const columnHelper = createColumnHelper<typeof features, User>();
 
 // ---------------------------------------------------------------------------
 // Shared styles
@@ -146,7 +164,7 @@ const tdStyles: CSSProperties = {
 // Story: SortableTable
 // ---------------------------------------------------------------------------
 
-const sortableColumns = [
+const sortableColumns = columnHelper.columns([
   columnHelper.accessor("name", {
     header: "Name",
     cell: (info) => info.getValue(),
@@ -181,18 +199,17 @@ const sortableColumns = [
     header: "Last Login",
     cell: (info) => info.getValue(),
   }),
-];
+]);
 
 function SortableTableDemo() {
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const table = useReactTable({
+  const table = useTable({
+    features,
     data: USERS,
     columns: sortableColumns,
     state: { sorting },
     onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
   });
 
   return (
@@ -244,7 +261,7 @@ function SortableTableDemo() {
                       : "var(--spectrum-gray-100)",
                 }}
               >
-                {row.getVisibleCells().map((cell) => (
+                {row.getAllCells().map((cell) => (
                   <td key={cell.id} style={tdStyles}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
@@ -274,16 +291,14 @@ function FilterableTableDemo() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
 
-  const table = useReactTable({
+  const table = useTable({
+    features,
     data: USERS,
     columns: sortableColumns,
     state: { sorting, columnFilters, globalFilter },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
   });
 
   return (
@@ -368,7 +383,7 @@ function FilterableTableDemo() {
                         : "var(--spectrum-gray-100)",
                   }}
                 >
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getAllCells().map((cell) => (
                     <td key={cell.id} style={tdStyles}>
                       {flexRender(
                         cell.column.columnDef.cell,
