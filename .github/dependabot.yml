@@ -11,6 +11,11 @@ updates:
       - merlinf14b
     labels:
       - dependencies
+    ignore:
+      # Keep @types/node on the Node major CI runs (22.x); patches/minors still flow.
+      - dependency-name: "@types/node"
+        update-types:
+          - version-update:semver-major
     groups:
       tanstack:
         patterns:
